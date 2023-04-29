@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        text-decoration: NONE;
+      }
+
+      canvas {
+        margin: 0 auto;
+        display: block;
+        border: 1px solid #000;
+        /* background-image: url('..//坦克大战/images/开始.jpg');
+        background-repeat: no-repeat;
+        background-size: 100% 100%; */
+      }
+      #control {
+        width: 800px;
+        height: 50px;
+        margin: 30px auto;
+        /* background-color: pink; */
+      }
+      #control ul {
+        margin: 0 auto;
+        width: 350px;
+        height: 50px;
+        /* background-color: yellowgreen; */
+        text-align: center;
+      }
+      ul li {
+        list-style: none;
+        float: left;
+        margin-left: 50px;
+      }
+      .gameStart {
+        width: 100px;
+        height: 30px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="#count" width="600px" height="600px"> 您的浏览器版本过低,请升级浏览器或者使用chrome打开 </canvas>
+    <div id="control">
+      <ul>
+        <li><button id="start" class="gameStart">开始</button></li>
+        <li><button class="gameStart" id="end">结束</button></li>
+      </ul>
+    </div>
+
+    <script type="text/javascript" src="caokong.js"></script>
+  </body>
+</html>
