@@ -1,6 +1,14 @@
+//定义的参数
+let moveSelect = 1
+
 /*获取画布的信息 */
 const canvas = document.getElementById('#count')
 var c = canvas.getContext('2d')
+
+/*定义图片*/
+const firstPic = new Picture('../tankWorld/images/开始.jpg', 0, 0, 600, 600)
+const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 365, 30, 30)
+
 /**
  *
  * 坦克的速度 moveSpeed
@@ -26,6 +34,22 @@ function MyTank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, 
   Tank.call(this, moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, fireDirection, tankImages)
   this.move = function () {}
 }
+/**
+ *
+ * @param {*图片路径} src
+ * @param {*图片起始点坐标x} x
+ * @param {*图片起始点坐标y} y
+ * @param {*图片宽度} w
+ * @param {*图片高度} h
+ */
+function Picture(src, x, y, w, h) {
+  this.src = src
+  this.x = x
+  this.y = y
+  this.w = w
+  this.h = h
+}
+
 // 图片导入函数
 /*
  *  参数
@@ -33,50 +57,73 @@ function MyTank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, 
  * x,y 图片起始点坐标
  * w,h 图片的场合宽
  */
-function Picture(src, x, y, w, h) {
-  let img = new Image()
-  img.src = src
-  img.onload = function () {
-    c.drawImage(this, x, y, w, h)
-  }
-}
-
-function addImage(src) {
+function drawpic(pic) {
   return new Promise((resolve, reject) => {
     const img = new Image()
-    img.crossOrigin = 'anonymous'
-    img.onload = () => {
+
+    //img.crossOrigin = 'anonymous'
+    img.onload = function () {
+      c.drawImage(img, pic.x, pic.y, pic.w, pic.h)
       resolve(img)
     }
-    img.onerror = () => {
-      reject()
-    }
-    img.src = src
-    if (img.complete) {
-      resolve(img)
-    }
+    img.src = pic.src
   })
+}
+//检测开始界面按键
+const keyhandler1 = (e) => {
+  //阻止上下键控制窗口
+  // console.log(e)
+  e.preventDefault()
+  const { code, keyCode } = e
+  // const isLeft = code === 'ArrowLeft' || keyCode === 37
+  const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
+  // const isRight = code === 'ArrowRight' || keyCode === 39
+  const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
+
+  // const isNext = isRight || isDown
+  // const isPre = isLeft || isTop
+
+  if (isTop) {
+    console.log('我上了')
+    if (selectGameModelPic.y > 365) {
+      selectGameModelPic.y -= 45
+      // c.clearRect(0, 0, 600, 600)
+      drawpic(firstPic)
+      // 在这之后才能继续绘制其他图片
+      drawpic(selectGameModelPic)
+
+      moveSelect--
+      console.log(moveSelect)
+    }
+  }
+  if (isDown) {
+    console.log('我下了')
+    if (selectGameModelPic.y < 460) {
+      selectGameModelPic.y += 45
+      //c.clearRect(0, 0, 600, 600)
+      drawpic(firstPic)
+      //在这之后才能继续绘制其他图片
+      drawpic(selectGameModelPic)
+      moveSelect++
+      console.log(moveSelect)
+    }
+  }
 }
 
 //获取开始按钮
 const start = document.querySelector('#start')
 
 start.addEventListener('click', function () {
-  console.log('gogo')
   c.clearRect(0, 0, 600, 600)
-  // var img = new Image()
-  // img.src = '../坦克大战/images/开始.jpg'
-  // img.onload = function () {
-  //   c.drawImage(img, 0, 0, 600, 600)
-  // }
-
-  this.addImage('../坦克大战/images/开始.jpg').then((img) => {
-    const firstPic = Picture('../坦克大战/images/开始.jpg', 0, 0, 600, 600)
-    // 在这之后才能继续绘制其他图片
-    this.addImage('../坦克大战/images/qidong.png').then((img) => {
-       const seletGameModelPic = Picture('../坦克大战/images/qidong.png', 250, 460, 50, 50)
-    })
+  var img = new Image()
+  img.src = '../坦克大战/images/开始.jpg'
+  img.onload = function () {
+    c.drawImage(img, 0, 0, 600, 600)
   }
-  
- 
+
+  drawpic(firstPic)
+  // 在这之后才能继续绘制其他图片
+  drawpic(selectGameModelPic)
+
+  document.addEventListener('keydown', keyhandler1)
 })
