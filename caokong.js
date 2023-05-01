@@ -1,5 +1,9 @@
 //定义的参数
+
+//选择难度参数
 let moveSelect = 1
+//进行关卡
+let level = 1
 
 /*获取画布的信息 */
 const canvas = document.getElementById('#count')
@@ -8,6 +12,16 @@ var c = canvas.getContext('2d')
 /*定义图片*/
 const firstPic = new Picture('../tankWorld/images/开始.jpg', 0, 0, 600, 600)
 const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 365, 30, 30)
+const secondPic = new Picture('../tankWorld/images/jiemian.png', 0, 0, 600, 600)
+
+/*定义地图对象*/
+function Mapstatic() {}
+/*定义小方块对象
+ *
+ *
+ *
+ */
+function Block() {}
 
 /**
  *
@@ -19,7 +33,6 @@ const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 36
  * 坦克子弹打出方向  fireDirection
  * 坦克的图片 tankImages
  */
-
 //所有的坦克
 function Tank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, fireDirection, tankImages) {
   this.moveSpeed = moveSpeed
@@ -60,15 +73,20 @@ function Picture(src, x, y, w, h) {
 function drawpic(pic) {
   return new Promise((resolve, reject) => {
     const img = new Image()
-
+    img.src = pic.src
     //img.crossOrigin = 'anonymous'
     img.onload = function () {
       c.drawImage(img, pic.x, pic.y, pic.w, pic.h)
       resolve(img)
     }
-    img.src = pic.src
   })
 }
+//游戏运行的函数
+function gamestart() {
+  console.log('这是第' + level + '关，难度系数' + moveSelect)
+  c.clearRect(75, 75, 450, 450)
+}
+
 //检测开始界面按键
 const keyhandler1 = (e) => {
   //阻止上下键控制窗口
@@ -79,7 +97,7 @@ const keyhandler1 = (e) => {
   const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
   // const isRight = code === 'ArrowRight' || keyCode === 39
   const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
-
+  const queren = code === 'Enter' || keyCode === 13
   // const isNext = isRight || isDown
   // const isPre = isLeft || isTop
 
@@ -108,6 +126,14 @@ const keyhandler1 = (e) => {
       console.log(moveSelect)
     }
   }
+  if (queren) {
+    console.log('你按了确认键')
+    c.clearRect(0, 0, 600, 600)
+    drawpic(secondPic)
+    c.font = '15px Arial'
+    c.fillText('欢迎来到第' + level + '关', 240, 280)
+    const gogo = window.setTimeout(gamestart, 2000)
+  }
 }
 
 //获取开始按钮
@@ -115,12 +141,11 @@ const start = document.querySelector('#start')
 
 start.addEventListener('click', function () {
   c.clearRect(0, 0, 600, 600)
-  var img = new Image()
-  img.src = '../坦克大战/images/开始.jpg'
-  img.onload = function () {
-    c.drawImage(img, 0, 0, 600, 600)
-  }
-
+  // var img = new Image()
+  // img.src = '../坦克大战/images/开始.jpg'
+  // img.onload = function () {
+  //   c.drawImage(img, 0, 0, 600, 600)
+  // }
   drawpic(firstPic)
   // 在这之后才能继续绘制其他图片
   drawpic(selectGameModelPic)
