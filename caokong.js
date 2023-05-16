@@ -1,52 +1,15 @@
-//定义的参数
+//显示界面的面数
+let jiemian = 0
 
 //选择难度参数
 let moveSelect = 1
 //进行关卡
 let level = 1
 
-/*获取画布的信息 */
-const canvas = document.getElementById('#count')
-var c = canvas.getContext('2d')
+/*获取画布*/
+const canvas = document.querySelector('#count')
+var ctx = canvas.getContext('2d')
 
-/*定义图片*/
-const firstPic = new Picture('../tankWorld/images/开始.jpg', 0, 0, 600, 600)
-const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 365, 30, 30)
-const secondPic = new Picture('../tankWorld/images/jiemian.png', 0, 0, 600, 600)
-
-/*定义地图对象*/
-function Mapstatic() {}
-/*定义小方块对象
- *
- *
- *
- */
-function Block() {}
-
-/**
- *
- * 坦克的速度 moveSpeed
- * 坦克子弹的速度  fireSpeed
- * 坦克子弹的类型  fireType
- * 坦克子弹的大小倍数 fireMultiple
- * 坦克子弹的反弹次数 fireReboundTimes
- * 坦克子弹打出方向  fireDirection
- * 坦克的图片 tankImages
- */
-//所有的坦克
-function Tank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, fireDirection, tankImages) {
-  this.moveSpeed = moveSpeed
-  this.fireSpeed = fireSpeed
-  this.fireType = fireType
-  this.fireMultiple = fireMultiple
-  this.fireReboundTimes = fireReboundTimes
-  this.fireDirection = fireDirection
-  this.tankImages = tankImages
-}
-function MyTank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, fireDirection, tankImages) {
-  Tank.call(this, moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, fireDirection, tankImages)
-  this.move = function () {}
-}
 /**
  *
  * @param {*图片路径} src
@@ -55,100 +18,127 @@ function MyTank(moveSpeed, fireSpeed, fireType, fireMultiple, fireReboundTimes, 
  * @param {*图片宽度} w
  * @param {*图片高度} h
  */
-function Picture(src, x, y, w, h) {
-  this.src = src
-  this.x = x
-  this.y = y
-  this.w = w
-  this.h = h
+
+class Picture {
+  constructor(src, x, y, w, h) {
+    this.src = src
+    this.x = x
+    this.y = y
+    this.w = w
+    this.h = h
+  }
 }
 
-// 图片导入函数
-/*
- *  参数
- * src 图片路径
- * x,y 图片起始点坐标
- * w,h 图片的场合宽
- */
+//定义图片
+const firstPic = new Picture('../tankWorld/images/开始.jpg', 0, 0, 600, 600)
+const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 365, 30, 30)
+const secondPic = new Picture('../tankWorld/images/jiemian.png', 0, 0, 600, 600)
+
+//画画对象
 function drawpic(pic) {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.src = pic.src
     //img.crossOrigin = 'anonymous'
     img.onload = function () {
-      c.drawImage(img, pic.x, pic.y, pic.w, pic.h)
+      ctx.drawImage(img, pic.x, pic.y, pic.w, pic.h)
       resolve(img)
     }
   })
 }
+
+/*获取开始按钮*/
+const startButton = document.querySelector('#startButton')
+
+startButton.addEventListener('click', function () {
+  jiemian = 1
+  //初始化选择难度和等级
+  level = 1
+  moveSelect = 1
+  selectGameModelPic.x = 200
+  selectGameModelPic.y = 365
+  console.log(jiemian)
+})
+
+const endButton = document.querySelector('#endButton')
+endButton.addEventListener('click', function () {
+  jiemian = 0
+  console.log(jiemian)
+})
+
 //游戏运行的函数
 function gamestart() {
   console.log('这是第' + level + '关，难度系数' + moveSelect)
-  c.clearRect(75, 75, 450, 450)
+  ctx.clearRect(75, 75, 450, 450)
 }
 
-//检测开始界面按键
 const keyhandler1 = (e) => {
   //阻止上下键控制窗口
-  // console.log(e)
+  console.log(this.e)
   e.preventDefault()
-  const { code, keyCode } = e
-  // const isLeft = code === 'ArrowLeft' || keyCode === 37
-  const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
-  // const isRight = code === 'ArrowRight' || keyCode === 39
-  const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
-  const queren = code === 'Enter' || keyCode === 13
-  // const isNext = isRight || isDown
-  // const isPre = isLeft || isTop
+  if (jiemian == 1) {
+    const { code, keyCode } = e
+    // const isLeft = code === 'ArrowLeft' || keyCode === 37
+    const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
+    // const isRight = code === 'ArrowRight' || keyCode === 39
+    const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
+    const queren = code === 'Enter' || keyCode === 13
+    // const isNext = isRight || isDown
+    // const isPre = isLeft || isTop
 
-  if (isTop) {
-    console.log('我上了')
-    if (selectGameModelPic.y > 365) {
-      selectGameModelPic.y -= 45
-      // c.clearRect(0, 0, 600, 600)
-      drawpic(firstPic)
-      // 在这之后才能继续绘制其他图片
-      drawpic(selectGameModelPic)
+    if (isTop) {
+      console.log('我上了')
+      if (selectGameModelPic.y > 365) {
+        selectGameModelPic.y -= 45
+        // c.clearRect(0, 0, 600, 600)
+        drawpic(firstPic)
+        // 在这之后才能继续绘制其他图片
+        drawpic(selectGameModelPic)
+        moveSelect--
+        console.log(moveSelect)
+      }
+    }
+    if (isDown) {
+      console.log('我下了')
+      if (selectGameModelPic.y < 460) {
+        selectGameModelPic.y += 45
+        //c.clearRect(0, 0, 600, 600)
+        drawpic(firstPic)
+        //在这之后才能继续绘制其他图片
+        drawpic(selectGameModelPic)
+        moveSelect++
+        console.log(moveSelect)
+      }
+    }
+    if (queren) {
+      jiemian = 2
+      console.log('你按了确认键')
+      ctx.clearRect(0, 0, 600, 600)
+      drawpic(secondPic)
+      ctx.font = '15px Arial'
+      ctx.fillText('欢迎来到第' + level + '关', 240, 280)
 
-      moveSelect--
-      console.log(moveSelect)
+      const gogo = window.setTimeout(function () {
+        gamestart()
+      }, 2000)
     }
-  }
-  if (isDown) {
-    console.log('我下了')
-    if (selectGameModelPic.y < 460) {
-      selectGameModelPic.y += 45
-      //c.clearRect(0, 0, 600, 600)
-      drawpic(firstPic)
-      //在这之后才能继续绘制其他图片
-      drawpic(selectGameModelPic)
-      moveSelect++
-      console.log(moveSelect)
-    }
-  }
-  if (queren) {
-    console.log('你按了确认键')
-    c.clearRect(0, 0, 600, 600)
-    drawpic(secondPic)
-    c.font = '15px Arial'
-    c.fillText('欢迎来到第' + level + '关', 240, 280)
-    const gogo = window.setTimeout(gamestart, 2000)
   }
 }
 
-//获取开始按钮
-const start = document.querySelector('#start')
+document.addEventListener('keydown', keyhandler1)
 
-start.addEventListener('click', function () {
-  c.clearRect(0, 0, 600, 600)
-  // var img = new Image()
-  // img.src = '../坦克大战/images/开始.jpg'
-  // img.onload = function () {
-  //   c.drawImage(img, 0, 0, 600, 600)
-  // }
-  drawpic(firstPic)
-  // 在这之后才能继续绘制其他图片
-  drawpic(selectGameModelPic)
-
-  document.addEventListener('keydown', keyhandler1)
-})
+//主函数
+function main() {
+  console.log(jiemian)
+  switch (jiemian) {
+    case 0:
+      ctx.clearRect(0, 0, 600, 600)
+      break
+    case 1:
+      drawpic(firstPic)
+      drawpic(selectGameModelPic)
+    case 2:
+  }
+  window.requestAnimationFrame(main)
+}
+window.requestAnimationFrame(main)
