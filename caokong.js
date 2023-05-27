@@ -30,14 +30,14 @@ class Picture {
 }
 
 //定义图片
-const firstPic = new Picture('../tankWorld/images/开始.jpg', 0, 0, 600, 600)
-const selectGameModelPic = new Picture('../tankWorld/images/qidong.png', 200, 365, 30, 30)
-const secondPic = new Picture('../tankWorld/images/jiemian.png', 0, 0, 600, 600)
+const firstPic = new Picture('images/开始.jpg', 0, 0, 600, 600)
+const selectGameModelPic = new Picture('images/qidong.png', 200, 365, 30, 30)
+const secondPic = new Picture('images/jiemian.png', 0, 0, 600, 600)
 
 //画画对象
 function drawpic(pic) {
   return new Promise((resolve, reject) => {
-    const img = new Image()
+    var img = new Image()
     img.src = pic.src
     //img.crossOrigin = 'anonymous'
     img.onload = function () {
@@ -46,6 +46,103 @@ function drawpic(pic) {
     }
   })
 }
+
+/*
+    *定义物理块
+    *src 图片路径
+    *blood 血量
+    *hardness 硬度
+
+*/
+class Block {
+  constructor(src, blood, hardness) {
+    this.src = src
+    this.blood = blood
+    this.hardness = hardness
+    // this.x = x * 15 + 75
+    // this.y = y * 15 + 75
+  }
+  draw(x, y) {
+    var img = new Image()
+    img.src = this.src
+    ctx.drawImage(img, x * 20 + 80, y * 20 + 80, 20, 20)
+  }
+}
+
+//创建墙对象
+// const red_Block = new block('../tankWorld/images/wall1.jpg', 10, 1)
+// const white_Block = new block('../tankWorld/images/wall2.jpg', 10, 1)
+/*
+ * 定义地图
+ *
+ */
+let level1_Map = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 0, 0],
+  [0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 0, 0],
+  [0, 0, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
+
+//let map = new Array(22)
+
+// let map = new Array()
+//方案一
+class Map {
+  constructor(level) {
+    this.level = level
+  }
+  draw2() {
+    var arr = eval('level' + level + '_Map')
+
+    for (var i = 0; i < 22; i++) {
+      for (var j = 0; j < 22; j++) {
+        switch (arr[i][j]) {
+          case 0:
+            ctx.fillRect(i * 20 + 80, j * 20 + 80, 20, 20)
+            break
+          case 1:
+            var red_Block = new Block('images/wall2.jpg', 10, 1)
+            red_Block.draw(i, j)
+            break
+          case 2:
+            var white_Block = new Block('images/wall1.jpg', 10, 1)
+            white_Block.draw(i, j)
+            break
+          default:
+            throw new Error('地图参数错误')
+        }
+      }
+    }
+  }
+}
+
+//定义关卡数
+const MAX_LEVEL = 2
+//手写地图参数
+
+//定义地图数组大小
+// var map = new Array(MAX_LEVEL);
+// for (let i = 0; i < MAX_LEVEL; i++) {
+//   //map[i] = (eval("level" + i))
+// }
 
 /*获取开始按钮*/
 const startButton = document.querySelector('#startButton')
@@ -66,15 +163,9 @@ endButton.addEventListener('click', function () {
   console.log(jiemian)
 })
 
-//游戏运行的函数
-function gamestart() {
-  console.log('这是第' + level + '关，难度系数' + moveSelect)
-  ctx.clearRect(75, 75, 450, 450)
-}
-
 const keyhandler1 = (e) => {
   //阻止上下键控制窗口
-  console.log(this.e)
+
   e.preventDefault()
   if (jiemian == 1) {
     const { code, keyCode } = e
@@ -119,7 +210,7 @@ const keyhandler1 = (e) => {
       ctx.fillText('欢迎来到第' + level + '关', 240, 280)
 
       const gogo = window.setTimeout(function () {
-        gamestart()
+        jiemian = 3
       }, 2000)
     }
   }
@@ -137,7 +228,14 @@ function main() {
     case 1:
       drawpic(firstPic)
       drawpic(selectGameModelPic)
-    case 2:
+      break
+    case 3: {
+      // let guan = new Map(eval('level' + level + '_Map'))
+      ctx.clearRect(80, 80, 440, 440)
+      let guan = new Map(level)
+      guan.draw2()
+      break
+    }
   }
   window.requestAnimationFrame(main)
 }
