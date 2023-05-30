@@ -52,13 +52,15 @@ function drawpic(pic) {
     *src 图片路径
     *blood 血量
     *hardness 硬度
+    *collision碰撞体积
 
 */
 class Block {
-  constructor(src, blood, hardness) {
+  constructor(src, blood, hardness, collision) {
     this.src = src
     this.blood = blood
     this.hardness = hardness
+    this.collision = collision
     // this.x = x * 15 + 75
     // this.y = y * 15 + 75
   }
@@ -66,12 +68,10 @@ class Block {
     var img = new Image()
     img.src = this.src
     ctx.drawImage(img, x * 20 + 80, y * 20 + 80, 20, 20)
+    console.log('我被调用了')
   }
 }
 
-//创建墙对象
-// const red_Block = new block('../tankWorld/images/wall1.jpg', 10, 1)
-// const white_Block = new block('../tankWorld/images/wall2.jpg', 10, 1)
 /*
  * 定义地图
  *
@@ -101,48 +101,44 @@ let level1_Map = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
-//let map = new Array(22)
+//定义关卡数
+const MAX_LEVEL = 2
 
-// let map = new Array()
-//方案一
-class Map {
-  constructor(level) {
-    this.level = level
-  }
-  draw2() {
-    var arr = eval('level' + level + '_Map')
-
-    for (var i = 0; i < 22; i++) {
-      for (var j = 0; j < 22; j++) {
-        switch (arr[i][j]) {
-          case 0:
-            ctx.fillRect(i * 20 + 80, j * 20 + 80, 20, 20)
-            break
-          case 1:
-            var red_Block = new Block('images/wall2.jpg', 10, 1)
-            red_Block.draw(i, j)
-            break
-          case 2:
-            var white_Block = new Block('images/wall1.jpg', 10, 1)
-            white_Block.draw(i, j)
-            break
-          default:
-            throw new Error('地图参数错误')
-        }
+//手写地图参数
+let map = new Array(22)
+for (var i = 0; i < map.length; i++) {
+  map[i] = new Array(22)
+}
+function initMap(level) {
+  var arr = eval('level' + level + '_Map')
+  for (i = 0; i < 22; i++) {
+    for (var j = 0; j < 22; j++) {
+      switch (arr[i][j]) {
+        case 0:
+          //ctx.fillRect(i * 20 + 80, j * 20 + 80, 20, 20)
+          map[i][j] = new Block('images/wall3.jpg', 0, 0, 0)
+          break
+        case 1:
+          map[i][j] = new Block('images/wall2.jpg', 10, 1, 0)
+          //map[i][j].draw(i, j)
+          break
+        case 2:
+          map[i][j] = new Block('images/wall1.jpg', 10, 2, 0)
+          //white_Block.draw(i, j)
+          break
+        default:
+          throw new Error('地图参数错误')
       }
     }
   }
+  return map
 }
 
-//定义关卡数
-const MAX_LEVEL = 2
-//手写地图参数
-
-//定义地图数组大小
-// var map = new Array(MAX_LEVEL);
-// for (let i = 0; i < MAX_LEVEL; i++) {
-//   //map[i] = (eval("level" + i))
-// }
+/*
+ *定义坦克
+ *坦克血量
+ *
+ */
 
 /*获取开始按钮*/
 const startButton = document.querySelector('#startButton')
@@ -167,56 +163,54 @@ const keyhandler1 = (e) => {
   //阻止上下键控制窗口
 
   e.preventDefault()
-  if (jiemian == 1) {
-    const { code, keyCode } = e
-    // const isLeft = code === 'ArrowLeft' || keyCode === 37
-    const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
-    // const isRight = code === 'ArrowRight' || keyCode === 39
-    const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
-    const queren = code === 'Enter' || keyCode === 13
-    // const isNext = isRight || isDown
-    // const isPre = isLeft || isTop
 
-    if (isTop) {
-      console.log('我上了')
-      if (selectGameModelPic.y > 365) {
-        selectGameModelPic.y -= 45
-        // c.clearRect(0, 0, 600, 600)
-        drawpic(firstPic)
-        // 在这之后才能继续绘制其他图片
-        drawpic(selectGameModelPic)
-        moveSelect--
-        console.log(moveSelect)
-      }
-    }
-    if (isDown) {
-      console.log('我下了')
-      if (selectGameModelPic.y < 460) {
-        selectGameModelPic.y += 45
-        //c.clearRect(0, 0, 600, 600)
-        drawpic(firstPic)
-        //在这之后才能继续绘制其他图片
-        drawpic(selectGameModelPic)
-        moveSelect++
-        console.log(moveSelect)
-      }
-    }
-    if (queren) {
-      jiemian = 2
-      console.log('你按了确认键')
-      ctx.clearRect(0, 0, 600, 600)
-      drawpic(secondPic)
-      ctx.font = '15px Arial'
-      ctx.fillText('欢迎来到第' + level + '关', 240, 280)
+  const { code, keyCode } = e
+  // const isLeft = code === 'ArrowLeft' || keyCode === 37
+  const isTop = code === 'ArrowUp' || keyCode === 38 || keyCode === 87 || keyCode === 199
+  // const isRight = code === 'ArrowRight' || keyCode === 39
+  const isDown = code === 'ArrowDown' || keyCode === 40 || keyCode === 83 || keyCode === 155
+  const queren = code === 'Enter' || keyCode === 13
+  // const isNext = isRight || isDown
+  // const isPre = isLeft || isTop
 
-      const gogo = window.setTimeout(function () {
-        jiemian = 3
-      }, 2000)
+  if (isTop) {
+    console.log('我上了')
+    if (selectGameModelPic.y > 365) {
+      selectGameModelPic.y -= 45
+      // c.clearRect(0, 0, 600, 600)
+      drawpic(firstPic)
+      // 在这之后才能继续绘制其他图片
+      drawpic(selectGameModelPic)
+      moveSelect--
+      console.log(moveSelect)
     }
   }
-}
+  if (isDown) {
+    console.log('我下了')
+    if (selectGameModelPic.y < 460) {
+      selectGameModelPic.y += 45
+      //c.clearRect(0, 0, 600, 600)
+      drawpic(firstPic)
+      //在这之后才能继续绘制其他图片
+      drawpic(selectGameModelPic)
+      moveSelect++
+      console.log(moveSelect)
+    }
+  }
+  if (queren) {
+    jiemian = 2
+    console.log('你按了确认键')
+    ctx.clearRect(0, 0, 600, 600)
+    drawpic(secondPic)
+    ctx.font = '15px Arial'
+    ctx.fillText('欢迎来到第' + level + '关', 240, 280)
 
-document.addEventListener('keydown', keyhandler1)
+    const gogo = window.setTimeout(function () {
+      jiemian = 3
+      ctx.clearRect(80, 80, 440, 440)
+    }, 2000)
+  }
+}
 
 //主函数
 function main() {
@@ -226,17 +220,34 @@ function main() {
       ctx.clearRect(0, 0, 600, 600)
       break
     case 1:
-      drawpic(firstPic)
-      drawpic(selectGameModelPic)
+      {
+        drawpic(firstPic)
+        drawpic(selectGameModelPic)
+        document.addEventListener('keydown', keyhandler1)
+      }
       break
-    case 3: {
-      // let guan = new Map(eval('level' + level + '_Map'))
-      ctx.clearRect(80, 80, 440, 440)
-      let guan = new Map(level)
-      guan.draw2()
+    case 3:
+      {
+        //定义地图刷新开关
+        let mapReflash = 0
+
+        console.log(jiemian)
+        if (mapReflash == 0) {
+          //ctx.clearRect(80, 80, 440, 440)
+          var mapArr = initMap(level)
+          mapReflash = 1
+
+          for (i = 0; i < 22; i++) {
+            for (var j = 0; j < 22; j++) {
+              mapArr[i][j].draw(i, j)
+              console.log('我打印了图片')
+            }
+          }
+        }
+      }
       break
-    }
   }
+
   window.requestAnimationFrame(main)
 }
 window.requestAnimationFrame(main)
